@@ -448,7 +448,7 @@ func (o LoadOptions) getSharedConfigProfile(ctx context.Context) (string, bool, 
 // the previous call values.
 
 
-// aslamcodes.2 (from 1) Here's the LoadOptionFunction that I used to set the SharedConfigProfile of the LoadOptions structurre
+// aslamcodes.2 Here's the LoadOptionFunction that I used to set the SharedConfigProfile of the LoadOptions structurre
 // The load options struct is set of OPTIONS you can use to load the configuration
 func WithSharedConfigProfile(v string) LoadOptionsFunc {
 	return func(o *LoadOptions) error {
