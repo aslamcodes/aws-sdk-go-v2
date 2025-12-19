@@ -1110,6 +1110,7 @@ func (c *SharedConfig) setFromIniSection(profile string, section ini.Section) er
 		}
 	}
 
+	// aslamcodes.7 Here's is mostly where we are setting the CredentialProcess, its a rabbithole
 	updateString(&c.CredentialProcess, section, credentialProcessKey)
 	updateString(&c.WebIdentityTokenFile, section, webIdentityTokenFileKey)
 

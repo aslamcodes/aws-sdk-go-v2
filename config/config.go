@@ -201,7 +201,7 @@ func (cs configs) ResolveConfig(f func(configs []interface{}) error) error {
 func LoadDefaultConfig(ctx context.Context, optFns ...func(*LoadOptions) error) (cfg aws.Config, err error) {
 	var options LoadOptions
 	// aslamcodes.3 The LoadOptionFunction i created with WithShareconfigProfile HOF is executed here.
-	// Upon execution, it sets the SharedConfigProfile to whatever I provided
+	// Upon execution, it sets the SharedConfigProfile of the options (LoadOptions) to whatever I provided
 	// In my case appstream_machine_role
 	for _, optFn := range optFns {
 		if err := optFn(&options); err != nil {
@@ -210,13 +210,13 @@ func LoadDefaultConfig(ctx context.Context, optFns ...func(*LoadOptions) error) 
 	}
 
 	// assign Load Options to configs
-	// aslamcodes.4 the configs is of type []Config
-	// The Config is of type of interface{} which is actually any
-	// The intention of why creating config loadoptions into configs type is not really clear
+	// aslamcodes.4 the configs is of type []Config, The Config is of type of interface{} which is actually any
+	// The intention of why creating cfgCpy with loadoptions into configs type is not really clear, as LoadOptions and Config is bit confusing to put together
 	var cfgCpy = configs{options}
 
-	// aslamcodes.5 loader functions are worker functions that loads external configuration and return a Config type
+	// aslamcodes.5 loader functions are worker functions that loads external configuration and return a value of type Config
 	// AppendFromLoaders is much like append function for slices, it appends config to the config array, (using the loader functions) and return the new config slice (cs) back
+	//
 	cfgCpy, err = cfgCpy.AppendFromLoaders(ctx, resolveConfigLoaders(&options))
 	if err != nil {
 		return aws.Config{}, err
@@ -233,7 +233,7 @@ func LoadDefaultConfig(ctx context.Context, optFns ...func(*LoadOptions) error) 
 // aslamcodes.6 The resolveConfigLoaders could've been named with defaultConfigLoaders
 // The purpose of resolveConfigLoaders is to give you a static list of loaders
 // loaders[0] loades from env config, apparently
-// loaders[1] loades from shared config (ie, the files)
+// loaders[1] loades from shared config (ie, the files ~/.aws/config, ~/.aws/credentials)
 func resolveConfigLoaders(options *LoadOptions) []loader {
 	loaders := make([]loader, 2)
 	loaders[0] = loadEnvConfig
