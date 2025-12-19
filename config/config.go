@@ -196,8 +196,14 @@ func (cs configs) ResolveConfig(f func(configs []interface{}) error) error {
 // The default configuration sources are:
 // * Environment Variables
 // * Shared Configuration and Shared Credentials files.
+
+// aslamcodes.1 The load default config is what I use from appstream file to set the intended profile, using the WithSharedConfigProfile(string = profile name)
+// The WithShareConfigProfile is a loadoption function at
 func LoadDefaultConfig(ctx context.Context, optFns ...func(*LoadOptions) error) (cfg aws.Config, err error) {
 	var options LoadOptions
+	// aslamcodes.3 The LoadOptionFunction i created with WithShareconfigProfile HOF is executed here.
+	// Upon execution, it sets the SharedConfigProfile to whatever I provided
+	// IN my case appstream_machine_role
 	for _, optFn := range optFns {
 		if err := optFn(&options); err != nil {
 			return aws.Config{}, err
@@ -205,6 +211,8 @@ func LoadDefaultConfig(ctx context.Context, optFns ...func(*LoadOptions) error) 
 	}
 
 	// assign Load Options to configs
+	// aslamcodes.4 the configs is of type []Config
+	// The Config is of type of interface{} which is actually any
 	var cfgCpy = configs{options}
 
 	cfgCpy, err = cfgCpy.AppendFromLoaders(ctx, resolveConfigLoaders(&options))
